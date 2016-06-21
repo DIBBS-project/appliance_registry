@@ -2,9 +2,9 @@ swagger: '2.0'
 info:
   title: Appliance Registry API
   description: Store appliances with the Appliance Registry API.
-  version: "0.1"
+  version: "0.1.1"
 # the domain of the service
-host: 127.0.0.1:8002
+host: 127.0.0.1:8003
 # array of all schemes that your API supports
 schemes:
 # TODO: Change to HTTPS when not on localhost!
