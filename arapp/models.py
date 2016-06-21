@@ -9,11 +9,10 @@ class Software(models.Model):
 
 class Script(models.Model):
     code = models.TextField()
-    link_to_template = models.TextField()
 
     # Relationships
-    software = models.ForeignKey("Software", on_delete=models.CASCADE)
-    event = models.ForeignKey("Event", on_delete=models.CASCADE)
+    software = models.ForeignKey("Software", related_name='scripts', on_delete=models.CASCADE)
+    event = models.ForeignKey("Event", related_name='scripts', on_delete=models.CASCADE)
 
 
 class Event(models.Model):

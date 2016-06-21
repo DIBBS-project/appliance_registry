@@ -1,0 +1,749 @@
+swagger: '2.0'
+info:
+  title: Appliance Registry API
+  description: Store appliances with the Appliance Registry API.
+  version: "0.1"
+# the domain of the service
+host: 127.0.0.1:8002
+# array of all schemes that your API supports
+schemes:
+# TODO: Change to HTTPS when not on localhost!
+  - http
+# will be prefixed to all paths
+#basePath: /pdapp
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: Authorization
+    in: header
+  basic:
+    type: basic
+paths:
+  /events/:
+    get:
+      summary: Get the list of all the events registered.
+      description: |
+        Get the list of all the events registered. No authentification is required.
+      tags:
+        - Events
+      responses:
+        200:
+          description: An array of events
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Add a new event.
+      description: |
+        Add a new event. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: data
+          in: body
+          description: Event
+          required: true
+          schema:
+            $ref: '#/definitions/EventPost'
+      tags:
+        - Events
+      responses:
+        201:
+          description: The newly created event
+          schema:
+            $ref: '#/definitions/Event'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /events/{id}/:
+    get:
+      summary: Get a single event.
+      description: |
+        Get a single event. Authentification is not required.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the event
+          required: true
+          type: integer
+          minimum: 0
+      tags:
+        - Events
+      responses:
+        200:
+          description: The event matching the given ID
+          schema:
+            $ref: '#/definitions/Event'
+        404:
+          description: No event with the given ID
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Redefine an already existing event.
+      description: |
+        Redefine an already existing event. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: id
+          in: path
+          description: Id of the event
+          required: true
+          type: integer
+          minimum: 0
+        - name: data
+          in: body
+          description: Event
+          required: true
+          schema:
+            $ref: '#/definitions/EventPost'
+      tags:
+        - Events
+      responses:
+        200:
+          description: The updated event
+          schema:
+            $ref: '#/definitions/Event'
+        404:
+          description: No event with the given Id
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      summary: Modify an already existing event.
+      description: |
+        Modify an already existing event. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: id
+          in: path
+          description: Id of the event
+          required: true
+          type: integer
+          minimum: 0
+        - name: data
+          in: body
+          description: Event
+          required: true
+          schema:
+            $ref: '#/definitions/EventPatch'
+      tags:
+        - Events
+      responses:
+        200:
+          description: The updated event
+          schema:
+            $ref: '#/definitions/Event'
+        404:
+          description: No event with the given Id
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete an already existing event.
+      description: |
+        Delete an already existing event. Authentification is required.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the event
+          required: true
+          type: integer
+          minimum: 0
+      security:
+        - basic: []
+        - api_key: []
+      tags:
+        - Events
+      responses:
+        204:
+          description: Event correctly deleted
+        404:
+          description: No event with the given Id
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /scripts/:
+    get:
+      summary: Get the list of all the scripts registered.
+      description: |
+        Get the list of all the scripts registered. No authentification is required.
+      tags:
+        - Scripts
+      responses:
+        200:
+          description: An array of scripts
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Script'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Add a new script.
+      description: |
+        Add a new script. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: data
+          in: body
+          description: Script
+          required: true
+          schema:
+            $ref: '#/definitions/ScriptPost'
+      tags:
+        - Scripts
+      responses:
+        201:
+          description: The newly created script
+          schema:
+            $ref: '#/definitions/Script'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /scripts/{id}/:
+    get:
+      summary: Get a single script.
+      description: |
+        Get a single script. Authentification is not required.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the script
+          required: true
+          type: integer
+          minimum: 0
+      tags:
+        - Scripts
+      responses:
+        200:
+          description: The script matching the given ID
+          schema:
+            $ref: '#/definitions/Script'
+        404:
+          description: No script with the given ID
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Redefine an already existing script.
+      description: |
+        Redefine an already existing script. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: id
+          in: path
+          description: Id of the script
+          required: true
+          type: integer
+          minimum: 0
+        - name: data
+          in: body
+          description: Script
+          required: true
+          schema:
+            $ref: '#/definitions/ScriptPost'
+      tags:
+        - Scripts
+      responses:
+        200:
+          description: The updated script
+          schema:
+            $ref: '#/definitions/Script'
+        404:
+          description: No script with the given Id
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      summary: Modify an already existing script.
+      description: |
+        Modify an already existing script. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: id
+          in: path
+          description: Id of the script
+          required: true
+          type: integer
+          minimum: 0
+        - name: data
+          in: body
+          description: Script
+          required: true
+          schema:
+            $ref: '#/definitions/ScriptPatch'
+      tags:
+        - Scripts
+      responses:
+        200:
+          description: The updated script
+          schema:
+            $ref: '#/definitions/Script'
+        404:
+          description: No script with the given ID
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete an already existing script.
+      description: |
+        Delete an already existing script. Authentification is required.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the script
+          required: true
+          type: integer
+          minimum: 0
+      security:
+        - basic: []
+        - api_key: []
+      tags:
+        - Scripts
+      responses:
+        204:
+          description: Script correctly deleted
+        404:
+          description: No script with the given ID
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /softwares/:
+    get:
+      summary: Get the list of all the softwares registered.
+      description: |
+        Get the list of all the softwares registered. No authentification is required.
+      tags:
+        - Softwares
+      responses:
+        200:
+          description: An array of softwares
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Software'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Add a new softwares.
+      description: |
+        Add a new softwares. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: data
+          in: body
+          description: Software
+          required: true
+          schema:
+            $ref: '#/definitions/SoftwarePost'
+      tags:
+        - Softwares
+      responses:
+        201:
+          description: The newly created software
+          schema:
+            $ref: '#/definitions/Software'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /softwares/{id}/:
+    get:
+      summary: Get a single software.
+      description: |
+        Get a single software. Authentification is not required.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the software
+          required: true
+          type: integer
+          minimum: 0
+      tags:
+        - Softwares
+      responses:
+        200:
+          description: The software matching the given ID
+          schema:
+            $ref: '#/definitions/Software'
+        404:
+          description: No software with the given ID
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Redefine an already existing software.
+      description: |
+        Redefine an already existing software. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: id
+          in: path
+          description: Id of the software
+          required: true
+          type: integer
+          minimum: 0
+        - name: data
+          in: body
+          description: Software
+          required: true
+          schema:
+            $ref: '#/definitions/SoftwarePost'
+      tags:
+        - Softwares
+      responses:
+        200:
+          description: The updated software
+          schema:
+            $ref: '#/definitions/Software'
+        404:
+          description: No software with the given ID
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      summary: Modify an already existing software.
+      description: |
+        Modify an already existing software. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: id
+          in: path
+          description: Id of the software
+          required: true
+          type: integer
+          minimum: 0
+        - name: data
+          in: body
+          description: Software
+          required: true
+          schema:
+            $ref: '#/definitions/SoftwarePatch'
+      tags:
+        - Softwares
+      responses:
+        200:
+          description: The updated software
+          schema:
+            $ref: '#/definitions/Software'
+        404:
+          description: No software with the given ID
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete an already existing software.
+      description: |
+        Delete an already existing software. Authentification is required.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the software
+          required: true
+          type: integer
+          minimum: 0
+      security:
+        - basic: []
+        - api_key: []
+      tags:
+        - Softwares
+      responses:
+        204:
+          description: Software correctly deleted
+        404:
+          description: No software with the given ID
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /users/:
+    get:
+      summary: Get the list of all the users.
+      description: |
+        Get the list of all the users. No authentification is required.
+      tags:
+        - Users
+      responses:
+        200:
+          description: An array of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /users/{id}/:
+    get:
+      summary: Get a single user.
+      description: |
+        Get a single user. No authentification is required.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the user
+          required: true
+          type: integer
+          minimum: 0
+      tags:
+        - Users
+      responses:
+        200:
+          description: The user matching the given Id
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: No user with the given Id
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /api-token-auth/:
+    post:
+      summary: Get the authentification token for a user.
+      description: |
+        Get the authentification token for a user by providing his username and password. No authentification is required; however the credentials of the user are part of the request.
+      parameters:
+        - name: data
+          in: body
+          description: User credentials
+          required: true
+          schema:
+            $ref: '#/definitions/Credentials'
+      tags:
+        - Users
+      responses:
+        200:
+          description: The authentification token of the user
+          schema:
+            $ref: '#/definitions/TokenResp'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Software:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Unique identifier representing a specific software
+      name:
+        type: string
+        description: Name of the software
+      scripts:
+        type: array
+        items:
+          type: integer
+          description: IDs of script objects
+  SoftwarePost:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: Name of the software
+  SoftwarePatch:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the software
+  Event:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Unique identifier representing a specific event
+      name:
+        type: string
+        description: Name of the event
+      scripts:
+        type: array
+        items:
+          type: integer
+          description: IDs of script objects
+  EventPost:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: Name of the event
+  EventPatch:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the event
+  Script:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Unique identifier representing a specific script
+      code:
+        type: string
+        description: Actual code of the script
+      software:
+        type: integer
+        description: ID of the associated software
+      event:
+        type: integer
+        description: ID of the associated event
+  ScriptPost:
+    type: object
+    required:
+      - name
+      - code
+      - software
+      - event
+    properties:
+      name:
+        type: string
+        description: Name of the script
+      code:
+        type: string
+        description: Actual code of the script
+      software:
+        type: integer
+        description: ID of the associated software
+      event:
+        type: integer
+        description: ID of the associated event
+  ScriptPatch:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the script
+      code:
+        type: string
+        description: Actual code of the script
+      software:
+        type: integer
+        description: ID of the associated software
+      event:
+        type: integer
+        description: ID of the associated event
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Unique identifier representing a specific user
+      username:
+        type: string
+        description: Name given to the user.
+      process_definitions:
+        type: array
+        description: Array of IDs of all the process descriptions created by the user
+        items:
+          type: integer
+      definition:
+        type: string
+        description: JSON-formatted string containing all the information required to start the process
+  Error:
+    type: object
+    properties:
+      detail:
+        type: string
+  TokenResp:
+    type: object
+    properties:
+      token:
+        type: string
+  Credentials:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      username:
+        description: Username of the user
+        type: string
+      password:
+        description: Password of the user
+        type: string
