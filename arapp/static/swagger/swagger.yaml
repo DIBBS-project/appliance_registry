@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Appliance Registry API
   description: Store appliances with the Appliance Registry API.
-  version: "0.1.1"
+  version: "0.1.2"
 # the domain of the service
 host: 127.0.0.1:8003
 # array of all schemes that your API supports
@@ -23,28 +23,28 @@ securityDefinitions:
   basic:
     type: basic
 paths:
-  /events/:
+  /actions/:
     get:
-      summary: Get the list of all the events registered.
+      summary: Get the list of all the actions registered.
       description: |
-        Get the list of all the events registered. No authentification is required.
+        Get the list of all the actions registered. No authentification is required.
       tags:
-        - Events
+        - Actions
       responses:
         200:
-          description: An array of events
+          description: An array of actions
           schema:
             type: array
             items:
-              $ref: '#/definitions/Event'
+              $ref: '#/definitions/Action'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
     post:
-      summary: Add a new event.
+      summary: Add a new action.
       description: |
-        Add a new event. Authentification is required.
+        Add a new action. Authentification is required.
       security:
         - basic: []
         - api_key: []
@@ -52,42 +52,42 @@ paths:
       parameters:
         - name: data
           in: body
-          description: Event
+          description: Action
           required: true
           schema:
-            $ref: '#/definitions/EventPost'
+            $ref: '#/definitions/ActionPost'
       tags:
-        - Events
+        - Actions
       responses:
         201:
-          description: The newly created event
+          description: The newly created action
           schema:
-            $ref: '#/definitions/Event'
+            $ref: '#/definitions/Action'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /events/{id}/:
+  /actions/{id}/:
     get:
-      summary: Get a single event.
+      summary: Get a single action.
       description: |
-        Get a single event. Authentification is not required.
+        Get a single action. Authentification is not required.
       parameters:
         - name: id
           in: path
-          description: Id of the event
+          description: Id of the action
           required: true
           type: integer
           minimum: 0
       tags:
-        - Events
+        - Actions
       responses:
         200:
-          description: The event matching the given ID
+          description: The action matching the given ID
           schema:
-            $ref: '#/definitions/Event'
+            $ref: '#/definitions/Action'
         404:
-          description: No event with the given ID
+          description: No action with the given ID
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -95,9 +95,9 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     put:
-      summary: Redefine an already existing event.
+      summary: Redefine an already existing action.
       description: |
-        Redefine an already existing event. Authentification is required.
+        Redefine an already existing action. Authentification is required.
       security:
         - basic: []
         - api_key: []
@@ -105,25 +105,25 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Id of the event
+          description: Id of the action
           required: true
           type: integer
           minimum: 0
         - name: data
           in: body
-          description: Event
+          description: Action
           required: true
           schema:
-            $ref: '#/definitions/EventPost'
+            $ref: '#/definitions/ActionPost'
       tags:
-        - Events
+        - Actions
       responses:
         200:
-          description: The updated event
+          description: The updated action
           schema:
-            $ref: '#/definitions/Event'
+            $ref: '#/definitions/Action'
         404:
-          description: No event with the given Id
+          description: No action with the given Id
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -131,9 +131,9 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     patch:
-      summary: Modify an already existing event.
+      summary: Modify an already existing action.
       description: |
-        Modify an already existing event. Authentification is required.
+        Modify an already existing action. Authentification is required.
       security:
         - basic: []
         - api_key: []
@@ -141,25 +141,25 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Id of the event
+          description: Id of the action
           required: true
           type: integer
           minimum: 0
         - name: data
           in: body
-          description: Event
+          description: Action
           required: true
           schema:
-            $ref: '#/definitions/EventPatch'
+            $ref: '#/definitions/ActionPatch'
       tags:
-        - Events
+        - Actions
       responses:
         200:
-          description: The updated event
+          description: The updated action
           schema:
-            $ref: '#/definitions/Event'
+            $ref: '#/definitions/Action'
         404:
-          description: No event with the given Id
+          description: No action with the given Id
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -167,13 +167,13 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     delete:
-      summary: Delete an already existing event.
+      summary: Delete an already existing action.
       description: |
-        Delete an already existing event. Authentification is required.
+        Delete an already existing action. Authentification is required.
       parameters:
         - name: id
           in: path
-          description: Id of the event
+          description: Id of the action
           required: true
           type: integer
           minimum: 0
@@ -181,12 +181,12 @@ paths:
         - basic: []
         - api_key: []
       tags:
-        - Events
+        - Actions
       responses:
         204:
-          description: Event correctly deleted
+          description: Action correctly deleted
         404:
-          description: No event with the given Id
+          description: No action with the given Id
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -363,28 +363,28 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /softwares/:
+  /appliances/:
     get:
-      summary: Get the list of all the softwares registered.
+      summary: Get the list of all the appliances registered.
       description: |
-        Get the list of all the softwares registered. No authentification is required.
+        Get the list of all the appliances registered. No authentification is required.
       tags:
-        - Softwares
+        - Appliances
       responses:
         200:
-          description: An array of softwares
+          description: An array of appliances
           schema:
             type: array
             items:
-              $ref: '#/definitions/Software'
+              $ref: '#/definitions/Appliance'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
     post:
-      summary: Add a new softwares.
+      summary: Add a new appliances.
       description: |
-        Add a new softwares. Authentification is required.
+        Add a new appliances. Authentification is required.
       security:
         - basic: []
         - api_key: []
@@ -392,42 +392,42 @@ paths:
       parameters:
         - name: data
           in: body
-          description: Software
+          description: Appliance
           required: true
           schema:
-            $ref: '#/definitions/SoftwarePost'
+            $ref: '#/definitions/AppliancePost'
       tags:
-        - Softwares
+        - Appliances
       responses:
         201:
-          description: The newly created software
+          description: The newly created appliance
           schema:
-            $ref: '#/definitions/Software'
+            $ref: '#/definitions/Appliance'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /softwares/{id}/:
+  /appliances/{id}/:
     get:
-      summary: Get a single software.
+      summary: Get a single appliance.
       description: |
-        Get a single software. Authentification is not required.
+        Get a single appliance. Authentification is not required.
       parameters:
         - name: id
           in: path
-          description: Id of the software
+          description: Id of the appliance
           required: true
           type: integer
           minimum: 0
       tags:
-        - Softwares
+        - Appliances
       responses:
         200:
-          description: The software matching the given ID
+          description: The appliance matching the given ID
           schema:
-            $ref: '#/definitions/Software'
+            $ref: '#/definitions/Appliance'
         404:
-          description: No software with the given ID
+          description: No appliance with the given ID
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -435,9 +435,9 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     put:
-      summary: Redefine an already existing software.
+      summary: Redefine an already existing appliance.
       description: |
-        Redefine an already existing software. Authentification is required.
+        Redefine an already existing appliance. Authentification is required.
       security:
         - basic: []
         - api_key: []
@@ -445,25 +445,25 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Id of the software
+          description: Id of the appliance
           required: true
           type: integer
           minimum: 0
         - name: data
           in: body
-          description: Software
+          description: Appliance
           required: true
           schema:
-            $ref: '#/definitions/SoftwarePost'
+            $ref: '#/definitions/AppliancePost'
       tags:
-        - Softwares
+        - Appliances
       responses:
         200:
-          description: The updated software
+          description: The updated appliance
           schema:
-            $ref: '#/definitions/Software'
+            $ref: '#/definitions/Appliance'
         404:
-          description: No software with the given ID
+          description: No appliance with the given ID
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -471,9 +471,9 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     patch:
-      summary: Modify an already existing software.
+      summary: Modify an already existing appliance.
       description: |
-        Modify an already existing software. Authentification is required.
+        Modify an already existing appliance. Authentification is required.
       security:
         - basic: []
         - api_key: []
@@ -481,25 +481,25 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Id of the software
+          description: Id of the appliance
           required: true
           type: integer
           minimum: 0
         - name: data
           in: body
-          description: Software
+          description: Appliance
           required: true
           schema:
-            $ref: '#/definitions/SoftwarePatch'
+            $ref: '#/definitions/AppliancePatch'
       tags:
-        - Softwares
+        - Appliances
       responses:
         200:
-          description: The updated software
+          description: The updated appliance
           schema:
-            $ref: '#/definitions/Software'
+            $ref: '#/definitions/Appliance'
         404:
-          description: No software with the given ID
+          description: No appliance with the given ID
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -507,13 +507,13 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     delete:
-      summary: Delete an already existing software.
+      summary: Delete an already existing appliance.
       description: |
-        Delete an already existing software. Authentification is required.
+        Delete an already existing appliance. Authentification is required.
       parameters:
         - name: id
           in: path
-          description: Id of the software
+          description: Id of the appliance
           required: true
           type: integer
           minimum: 0
@@ -521,12 +521,12 @@ paths:
         - basic: []
         - api_key: []
       tags:
-        - Softwares
+        - Appliances
       responses:
         204:
-          description: Software correctly deleted
+          description: Appliance correctly deleted
         404:
-          description: No software with the given ID
+          description: No appliance with the given ID
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -602,62 +602,62 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 definitions:
-  Software:
+  Appliance:
     type: object
     properties:
       id:
         type: integer
-        description: Unique identifier representing a specific software
+        description: Unique identifier representing a specific appliance
       name:
         type: string
-        description: Name of the software
+        description: Name of the appliance
       scripts:
         type: array
         items:
           type: integer
           description: IDs of script objects
-  SoftwarePost:
+  AppliancePost:
     type: object
     required:
       - name
     properties:
       name:
         type: string
-        description: Name of the software
-  SoftwarePatch:
+        description: Name of the appliance
+  AppliancePatch:
     type: object
     properties:
       name:
         type: string
-        description: Name of the software
-  Event:
+        description: Name of the appliance
+  Action:
     type: object
     properties:
       id:
         type: integer
-        description: Unique identifier representing a specific event
+        description: Unique identifier representing a specific action
       name:
         type: string
-        description: Name of the event
+        description: Name of the action
       scripts:
         type: array
         items:
           type: integer
           description: IDs of script objects
-  EventPost:
+  ActionPost:
     type: object
     required:
       - name
     properties:
       name:
         type: string
-        description: Name of the event
-  EventPatch:
+        description: Name of the action
+  ActionPatch:
     type: object
     properties:
       name:
         type: string
-        description: Name of the event
+        description: Name of the action
   Script:
     type: object
     properties:
@@ -667,19 +667,19 @@ definitions:
       code:
         type: string
         description: Actual code of the script
-      software:
+      appliance:
         type: integer
-        description: ID of the associated software
-      event:
+        description: ID of the associated appliance
+      action:
         type: integer
-        description: ID of the associated event
+        description: ID of the associated action
   ScriptPost:
     type: object
     required:
       - name
       - code
-      - software
-      - event
+      - appliance
+      - action
     properties:
       name:
         type: string
@@ -687,12 +687,12 @@ definitions:
       code:
         type: string
         description: Actual code of the script
-      software:
+      appliance:
         type: integer
-        description: ID of the associated software
-      event:
+        description: ID of the associated appliance
+      action:
         type: integer
-        description: ID of the associated event
+        description: ID of the associated action
   ScriptPatch:
     type: object
     properties:
@@ -702,12 +702,12 @@ definitions:
       code:
         type: string
         description: Actual code of the script
-      software:
+      appliance:
         type: integer
-        description: ID of the associated software
-      event:
+        description: ID of the associated appliance
+      action:
         type: integer
-        description: ID of the associated event
+        description: ID of the associated action
   User:
     type: object
     properties:
