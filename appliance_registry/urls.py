@@ -43,6 +43,5 @@ urlpatterns = patterns('',
 
     # Demo
     url(r'^demo/', include('demo.urls')),
-    url(r'^_appliances/', demo_views.appliances),
 
 )
