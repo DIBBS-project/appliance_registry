@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Appliance Registry API
   description: Store appliances with the Appliance Registry API.
-  version: "0.1.2"
+  version: "0.1.3"
 # the domain of the service
 host: 127.0.0.1:8003
 # array of all schemes that your API supports
@@ -655,11 +655,11 @@ definitions:
         type: string
         description: Actual code of the script
       appliance:
-        type: integer
-        description: ID of the associated appliance
+        type: string
+        description: Name of the associated appliance
       action:
-        type: integer
-        description: ID of the associated action
+        type: string
+        description: Name of the associated action
   ScriptPost:
     type: object
     required:
@@ -668,33 +668,27 @@ definitions:
       - appliance
       - action
     properties:
-      name:
-        type: string
-        description: Name of the script
       code:
         type: string
         description: Actual code of the script
       appliance:
-        type: integer
-        description: ID of the associated appliance
+        type: string
+        description: Name of the associated appliance
       action:
-        type: integer
-        description: ID of the associated action
+        type: string
+        description: Name of the associated action
   ScriptPatch:
     type: object
     properties:
-      name:
-        type: string
-        description: Name of the script
       code:
         type: string
         description: Actual code of the script
       appliance:
-        type: integer
-        description: ID of the associated appliance
+        type: string
+        description: Name of the associated appliance
       action:
-        type: integer
-        description: ID of the associated action
+        type: string
+        description: Name of the associated action
   User:
     type: object
     properties:

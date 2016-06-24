@@ -14,7 +14,7 @@ class ApplianceSerializer(serializers.ModelSerializer):
 class ScriptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Script
-        fields = ('id', 'code', 'software', 'event')
+        fields = ('id', 'code', 'appliance', 'action')
 
 
 class ActionSerializer(serializers.ModelSerializer):
