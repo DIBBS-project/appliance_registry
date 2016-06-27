@@ -64,7 +64,7 @@ class ScriptViewSet(viewsets.ModelViewSet):
 class ScriptForApplianceAndAction(APIView):
     def get_appliance(self, name):
         try:
-            return Appliance.objects.filter(name=name).first()
+            return Appliance.objects.get(name=name)
         except Appliance.DoesNotExist:
             raise Http404
 
@@ -76,10 +76,14 @@ class ScriptForApplianceAndAction(APIView):
 
     def get(self, request, appliance, action, format=None):
         app = self.get_appliance(appliance)
-        for script in app.scripts:
-            scr = self.get_script(script)
-            if scr.action == action:
-                serializer = ScriptSerializer(scr)
+        for script in app.scripts.all():
+            if script.action.name == action:
+                serializer = ScriptSerializer(script)
+                return Response(serializer.data)
+        app = self.get_appliance(u'common')
+        for script in app.scripts.all():
+            if script.action.name == action:
+                serializer = ScriptSerializer(script)
                 return Response(serializer.data)
         raise Http404
 
