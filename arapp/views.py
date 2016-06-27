@@ -3,7 +3,10 @@ from arapp.serializers import ApplianceSerializer, ScriptSerializer, ActionSeria
 
 # from django.views.decorators.csrf import csrf_exempt
 
+from django.http import Http404
+
 from rest_framework import viewsets, permissions, status
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -56,6 +59,29 @@ class ScriptViewSet(viewsets.ModelViewSet):
     queryset = Script.objects.all()
     serializer_class = ScriptSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class ScriptForApplianceAndAction(APIView):
+    def get_appliance(self, name):
+        try:
+            return Appliance.objects.filter(name=name).first()
+        except Appliance.DoesNotExist:
+            raise Http404
+
+    def get_script(self, ids):
+        try:
+            return Script.objects.get(id=ids)
+        except Script.DoesNotExist:
+            raise Http404
+
+    def get(self, request, appliance, action, format=None):
+        app = self.get_appliance(appliance)
+        for script in app.scripts:
+            scr = self.get_script(script)
+            if scr.action == action:
+                serializer = ScriptSerializer(scr)
+                return Response(serializer.data)
+        raise Http404
 
 
 class ActionViewSet(viewsets.ModelViewSet):

@@ -42,14 +42,12 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Name</th>
         </tr>
         </thead>
         <tbody>
         {% for appliance in appliances %}
             <tr>
-                <td>{{ appliance.id }}</td>
                 <td>{{ appliance.name }}</td>
             </tr>
         {% endfor %}
