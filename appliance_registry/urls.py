@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
 from arapp import views
+import rest_framework.authtoken.views
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
@@ -22,3 +23,8 @@ urlpatterns = patterns(
     url(r'^demo/', include('demo.urls')),
 
 )
+
+# Allows to get a token by sending credentials
+urlpatterns += [
+    url(r'^api-token-auth/', rest_framework.authtoken.views.obtain_auth_token)
+]
