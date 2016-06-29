@@ -8,7 +8,7 @@ class ApplianceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appliance
-        fields = ('name', 'scripts')
+        fields = ('name', 'site_url', 'scripts')
 
 
 class ScriptSerializer(serializers.ModelSerializer):
