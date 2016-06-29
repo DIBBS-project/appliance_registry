@@ -9,6 +9,7 @@ router = DefaultRouter()
 router.register(r'actions', views.ActionViewSet)
 router.register(r'scripts', views.ScriptViewSet)
 router.register(r'appliances', views.ApplianceViewSet)
+router.register(r'sites', views.SiteViewSet)
 
 urlpatterns = patterns(
     '',

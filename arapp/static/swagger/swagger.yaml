@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Appliance Registry API
   description: Store appliances with the Appliance Registry API.
-  version: "0.1.5"
+  version: "0.1.8"
 # the domain of the service
 host: 127.0.0.1:8003
 # array of all schemes that your API supports
@@ -10,7 +10,7 @@ schemes:
 # TODO: Change to HTTPS when not on localhost!
   - http
 # will be prefixed to all paths
-#basePath: /pdapp
+#basePath: /arapp
 consumes:
   - application/json
 produces:
@@ -77,8 +77,7 @@ paths:
           in: path
           description: Name of the action
           required: true
-          type: integer
-          minimum: 0
+          type: string
       tags:
         - Actions
       responses:
@@ -184,6 +183,172 @@ paths:
           description: Action correctly deleted
         404:
           description: No action with the given name
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /sites/:
+    get:
+      summary: Get the list of all the sites registered.
+      description: |
+        Get the list of all the sites registered. No authentification is required.
+      tags:
+        - Sites
+      responses:
+        200:
+          description: An array of sites
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Site'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Add a new site.
+      description: |
+        Add a new site. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: data
+          in: body
+          description: Site
+          required: true
+          schema:
+            $ref: '#/definitions/SitePost'
+      tags:
+        - Sites
+      responses:
+        201:
+          description: The newly created site
+          schema:
+            $ref: '#/definitions/Site'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /sites/{name}/:
+    get:
+      summary: Get a single site.
+      description: |
+        Get a single site. Authentification is not required.
+      parameters:
+        - name: name
+          in: path
+          description: Name of the site
+          required: true
+          type: string
+      tags:
+        - Sites
+      responses:
+        200:
+          description: The site matching the given name
+          schema:
+            $ref: '#/definitions/Site'
+        404:
+          description: No site with the given name
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Redefine an already existing site.
+      description: |
+        Redefine an already existing site. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: name
+          in: path
+          description: Name of the site
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Site
+          required: true
+          schema:
+            $ref: '#/definitions/SitePost'
+      tags:
+        - Sites
+      responses:
+        200:
+          description: The updated site
+          schema:
+            $ref: '#/definitions/Site'
+        404:
+          description: No site with the given name
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      summary: Modify an already existing site.
+      description: |
+        Modify an already existing site. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: name
+          in: path
+          description: Name of the site
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Site
+          required: true
+          schema:
+            $ref: '#/definitions/SitePatch'
+      tags:
+        - Sites
+      responses:
+        200:
+          description: The updated site
+          schema:
+            $ref: '#/definitions/Site'
+        404:
+          description: No site with the given name
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete an already existing site.
+      description: |
+        Delete an already existing site. Authentification is required.
+      parameters:
+        - name: name
+          in: path
+          description: Name of the site
+          required: true
+          type: string
+      security:
+        - basic: []
+        - api_key: []
+      tags:
+        - Sites
+      responses:
+        204:
+          description: Site correctly deleted
+        404:
+          description: No site with the given name
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -632,9 +797,9 @@ definitions:
       name:
         type: string
         description: Name of the appliance
-      site_url:
+      site:
         type: string
-        description: URL of the site to use
+        description: Name of the site to use
       scripts:
         type: array
         items:
@@ -644,22 +809,23 @@ definitions:
     type: object
     required:
       - name
+      - site
     properties:
       name:
         type: string
         description: Name of the appliance
-      site_url:
+      site:
         type: string
-        description: URL of the site to use
+        description: Name of the site to use
   AppliancePatch:
     type: object
     properties:
       name:
         type: string
         description: Name of the appliance
-      site_url:
+      site:
         type: string
-        description: URL of the site to use
+        description: Name of the site to use
   Action:
     type: object
     properties:
@@ -685,6 +851,41 @@ definitions:
       name:
         type: string
         description: Name of the action
+  Site:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the site
+      contact_url:
+        type: string
+        description: Contact URL of the site
+      appliances:
+        type: array
+        items:
+          type: string
+          description: Names of appliances objects
+  SitePost:
+    type: object
+    required:
+      - name
+      - contact_url
+    properties:
+      name:
+        type: string
+        description: Name of the site
+      contact_url:
+        type: string
+        description: Contact URL of the site
+  SitePatch:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the site
+      contact_url:
+        type: string
+        description: Contact URL of the site
   Script:
     type: object
     properties:

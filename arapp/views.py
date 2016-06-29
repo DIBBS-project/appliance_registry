@@ -1,5 +1,5 @@
-from arapp.models import Appliance, Script, Action
-from arapp.serializers import ApplianceSerializer, ScriptSerializer, ActionSerializer, UserSerializer
+from arapp.models import Appliance, Script, Action, Site
+from arapp.serializers import ApplianceSerializer, ScriptSerializer, ActionSerializer, UserSerializer, SiteSerializer
 
 # from django.views.decorators.csrf import csrf_exempt
 
@@ -18,7 +18,8 @@ def api_root(request, format=None):
     return Response({
         'appliances': reverse('appliance-list', request=request, format=format),
         'scripts': reverse('script-list', request=request, format=format),
-        'actions': reverse('action-list', request=request, format=format)
+        'actions': reverse('action-list', request=request, format=format),
+        'sites': reverse('site-list', request=request, format=format)
     })
 
 
@@ -44,6 +45,27 @@ class ApplianceViewSet(viewsets.ModelViewSet):
         for key in request.data:
             data2[key] = request.data[key]
         data2[u'scripts'] = {}
+        serializer = self.get_serializer(data=data2)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class SiteViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = Site.objects.all()
+    serializer_class = SiteSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def create(self, request, *args, **kwargs):
+        data2 = {}
+        for key in request.data:
+            data2[key] = request.data[key]
+        data2[u'appliances'] = {}
         serializer = self.get_serializer(data=data2)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

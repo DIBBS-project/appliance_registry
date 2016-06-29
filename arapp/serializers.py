@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from models import Appliance, Script, Action
+from models import Appliance, Script, Action, Site
 from django.contrib.auth.models import User
 
 
@@ -8,7 +8,15 @@ class ApplianceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appliance
-        fields = ('name', 'site_url', 'scripts')
+        fields = ('name', 'site', 'scripts')
+
+
+class SiteSerializer(serializers.ModelSerializer):
+    appliances = serializers.PrimaryKeyRelatedField(many=True, queryset=Appliance.objects.all())
+
+    class Meta:
+        model = Site
+        fields = ('name', 'contact_url', 'appliances')
 
 
 class ScriptSerializer(serializers.ModelSerializer):

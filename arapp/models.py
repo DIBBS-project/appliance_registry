@@ -8,7 +8,12 @@ from rest_framework.authtoken.models import Token
 
 class Appliance(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
-    site_url = models.CharField(max_length=2048, default="https://openstack.tacc.chameleoncloud.org:5000/v2.0")
+    site = models.ForeignKey("Site", related_name='appliances', on_delete=models.CASCADE)
+
+
+class Site(models.Model):
+    name = models.CharField(max_length=100, primary_key=True)
+    contact_url = models.CharField(max_length=2048)
 
 
 class Action(models.Model):
