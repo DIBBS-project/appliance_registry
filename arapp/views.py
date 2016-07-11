@@ -1,5 +1,5 @@
-from arapp.models import Appliance, Script, Action, Site
-from arapp.serializers import ApplianceSerializer, ScriptSerializer, ActionSerializer, UserSerializer, SiteSerializer
+from arapp.models import Appliance, ApplianceImpl, Script, Action, Site
+from arapp.serializers import ApplianceSerializer, ApplianceImplSerializer, ScriptSerializer, ActionSerializer, UserSerializer, SiteSerializer
 
 # from django.views.decorators.csrf import csrf_exempt
 
@@ -38,6 +38,27 @@ class ApplianceViewSet(viewsets.ModelViewSet):
     """
     queryset = Appliance.objects.all()
     serializer_class = ApplianceSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def create(self, request, *args, **kwargs):
+        data2 = {}
+        for key in request.data:
+            data2[key] = request.data[key]
+        data2[u'implementations'] = {}
+        serializer = self.get_serializer(data=data2)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class ApplianceImplViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = ApplianceImpl.objects.all()
+    serializer_class = ApplianceImplSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
@@ -84,10 +105,11 @@ class ScriptViewSet(viewsets.ModelViewSet):
 
 
 class ScriptForApplianceAndAction(APIView):
-    def get_appliance(self, name):
+
+    def get_appliance_impl(self, name):
         try:
-            return Appliance.objects.get(name=name)
-        except Appliance.DoesNotExist:
+            return ApplianceImpl.objects.get(name=name)
+        except ApplianceImpl.DoesNotExist:
             raise Http404
 
     def get_script(self, ids):
@@ -96,14 +118,14 @@ class ScriptForApplianceAndAction(APIView):
         except Script.DoesNotExist:
             raise Http404
 
-    def get(self, request, appliance, action, format=None):
-        app = self.get_appliance(appliance)
-        for script in app.scripts.all():
+    def get(self, request, appliance_impl_name, action, format=None):
+        app_impl = self.get_appliance_impl(appliance_impl_name)
+        for script in app_impl.scripts.all():
             if script.action.name == action:
                 serializer = ScriptSerializer(script)
                 return Response(serializer.data)
-        app = self.get_appliance(u'common')
-        for script in app.scripts.all():
+        app_impl = self.get_appliance_impl(u'common')
+        for script in app_impl.scripts.all():
             if script.action.name == action:
                 serializer = ScriptSerializer(script)
                 return Response(serializer.data)
