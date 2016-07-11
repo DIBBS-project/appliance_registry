@@ -1,18 +1,26 @@
 from rest_framework import serializers
-from models import Appliance, Script, Action, Site
+from models import Appliance, ApplianceImpl, Script, Action, Site
 from django.contrib.auth.models import User
 
 
 class ApplianceSerializer(serializers.ModelSerializer):
-    scripts = serializers.PrimaryKeyRelatedField(many=True, queryset=Script.objects.all())
+    implementations = serializers.PrimaryKeyRelatedField(many=True, queryset=ApplianceImpl.objects.all())
 
     class Meta:
         model = Appliance
-        fields = ('name', 'image_name', 'site', 'scripts')
+        fields = ('name', 'implementations')
+
+
+class ApplianceImplSerializer(serializers.ModelSerializer):
+    scripts = serializers.PrimaryKeyRelatedField(many=True, queryset=Script.objects.all())
+
+    class Meta:
+        model = ApplianceImpl
+        fields = ('name', 'image_name', 'site', 'scripts', 'appliance')
 
 
 class SiteSerializer(serializers.ModelSerializer):
-    appliances = serializers.PrimaryKeyRelatedField(many=True, queryset=Appliance.objects.all())
+    appliances = serializers.PrimaryKeyRelatedField(many=True, queryset=ApplianceImpl.objects.all())
 
     class Meta:
         model = Site
