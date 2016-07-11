@@ -8,7 +8,7 @@ class ApplianceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appliance
-        fields = ('name', 'site', 'scripts')
+        fields = ('name', 'image_name', 'site', 'scripts')
 
 
 class SiteSerializer(serializers.ModelSerializer):

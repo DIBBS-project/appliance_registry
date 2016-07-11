@@ -797,6 +797,9 @@ definitions:
       name:
         type: string
         description: Name of the appliance
+      image_name:
+        type: string
+        description: Name of the image that will be used by the appliance
       site:
         type: string
         description: Name of the site to use

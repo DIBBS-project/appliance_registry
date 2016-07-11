@@ -8,6 +8,7 @@ from rest_framework.authtoken.models import Token
 
 class Appliance(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
+    image_name = models.CharField(max_length=300)
     site = models.ForeignKey("Site", related_name='appliances', on_delete=models.CASCADE)
 
 
