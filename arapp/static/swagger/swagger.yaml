@@ -722,6 +722,178 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+
+
+
+
+  /appliances_impl/:
+    get:
+      summary: Get the list of all the appliance implementations registered.
+      description: |
+        Get the list of all the appliance implementations registered. No authentification is required.
+      tags:
+        - Appliance Implementations
+      responses:
+        200:
+          description: An array of appliance implementations
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApplianceImplementation'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Add a new appliance implementation.
+      description: |
+        Add a new appliance implementation. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: data
+          in: body
+          description: ApplianceImplementation
+          required: true
+          schema:
+            $ref: '#/definitions/ApplianceImplementationPost'
+      tags:
+        - ApplianceImplementations
+      responses:
+        201:
+          description: The newly created appliance implementation
+          schema:
+            $ref: '#/definitions/ApplianceImplementation'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /appliances_impl/{name}/:
+    get:
+      summary: Get a single appliance implementation.
+      description: |
+        Get a single appliance implementation. Authentification is not required.
+      parameters:
+        - name: name
+          in: path
+          description: Name of the appliance implementation
+          required: true
+          type: string
+      tags:
+        - ApplianceImplementations
+      responses:
+        200:
+          description: The appliance implementation matching the given name
+          schema:
+            $ref: '#/definitions/ApplianceImplementation'
+        404:
+          description: No appliance implementation with the given name
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Redefine an already existing appliance implementation.
+      description: |
+        Redefine an already existing appliance implementation. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: name
+          in: path
+          description: Name of the appliance implementation
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: ApplianceImplementation
+          required: true
+          schema:
+            $ref: '#/definitions/ApplianceImplementationPost'
+      tags:
+        - Appliances
+      responses:
+        200:
+          description: The updated appliance implementation
+          schema:
+            $ref: '#/definitions/ApplianceImplementation'
+        404:
+          description: No appliance implementation with the given name
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      summary: Modify an already existing appliance implementation.
+      description: |
+        Modify an already existing appliance implementation. Authentification is required.
+      security:
+        - basic: []
+        - api_key: []
+
+      parameters:
+        - name: name
+          in: path
+          description: Name of the appliance implementation
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Appliance implementation
+          required: true
+          schema:
+            $ref: '#/definitions/ApplianceImplementationPatch'
+      tags:
+        - ApplianceImplementations
+      responses:
+        200:
+          description: The updated appliance implementation
+          schema:
+            $ref: '#/definitions/ApplianceImplementation'
+        404:
+          description: No appliance implementation with the given name
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete an already existing appliance implementation.
+      description: |
+        Delete an already existing appliance implementation. Authentification is required.
+      parameters:
+        - name: name
+          in: path
+          description: Name of the appliance implementation
+          required: true
+          type: string
+      security:
+        - basic: []
+        - api_key: []
+      tags:
+        - ApplianceImplementations
+      responses:
+        204:
+          description: Appliance implementation correctly deleted
+        404:
+          description: No appliance implementation with the given name
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+
   /users/:
     get:
       summary: Get the list of all the users.
@@ -797,14 +969,11 @@ definitions:
       name:
         type: string
         description: Name of the appliance
-      site:
-        type: string
-        description: Name of the site to use
-      scripts:
+      implementations:
         type: array
         items:
           type: integer
-          description: IDs of script objects
+          description: IDs of appliance implementations
   AppliancePost:
     type: object
     required:
@@ -823,9 +992,56 @@ definitions:
       name:
         type: string
         description: Name of the appliance
+
+  ApplianceImplementation:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the appliance implementation
+      image_name:
+        type: string
+        description: Name of the image that will be used by the appliance implementation
       site:
         type: string
         description: Name of the site to use
+      appliance:
+        type: string
+        description: ID (name) of the appliance
+      scripts:
+        type: array
+        items:
+          type: integer
+          description: IDs of script objects
+  ApplianceImplementationPost:
+    type: object
+    required:
+      - name
+      - site
+    properties:
+      name:
+        type: string
+        description: Name of the appliance implementation
+      appliance:
+        type: string
+        description: ID (name) of the appliance
+      site:
+        type: string
+        description: Name of the site to use
+  ApplianceImplementationPatch:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the appliance implementation
+      appliance:
+        type: string
+        description: ID (name) of the appliance
+      site:
+        type: string
+        description: Name of the site to use
+
+
   Action:
     type: object
     properties:
