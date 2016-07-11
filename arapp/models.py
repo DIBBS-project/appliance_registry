@@ -8,12 +8,6 @@ from rest_framework.authtoken.models import Token
 
 class Appliance(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
-
-
-class ApplianceImpl(models.Model):
-    name = models.CharField(max_length=100, primary_key=True)
-    image_name = models.CharField(max_length=300)
-    appliance = models.ForeignKey(Appliance, related_name='implementations', on_delete=models.CASCADE)
     site = models.ForeignKey("Site", related_name='appliances', on_delete=models.CASCADE)
 
 
@@ -30,7 +24,7 @@ class Script(models.Model):
     code = models.TextField()
 
     # Relationships
-    appliance = models.ForeignKey("ApplianceImpl", related_name='scripts', on_delete=models.CASCADE)
+    appliance = models.ForeignKey("Appliance", related_name='scripts', on_delete=models.CASCADE)
     action = models.ForeignKey("Action", related_name='scripts', on_delete=models.CASCADE)
 
 
