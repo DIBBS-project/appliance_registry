@@ -42,12 +42,14 @@
         <thead>
         <tr>
             <th>Name</th>
+            <th>Contact URL</th>
         </tr>
         </thead>
         <tbody>
-        {% for appliance in appliances %}
+        {% for site in sites %}
             <tr>
-                <td>{{ appliance.name }}</td>
+                <td>{{ site.name }}</td>
+                <td>{{ site.contact_url }}</td>
             </tr>
         {% endfor %}
         </tbody>

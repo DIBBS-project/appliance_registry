@@ -42,12 +42,18 @@
         <thead>
         <tr>
             <th>Name</th>
+            <th>Appliance</th>
+            <th>Site</th>
+            <th>Image</th>
         </tr>
         </thead>
         <tbody>
-        {% for appliance in appliances %}
+        {% for appliance_implementation in appliance_implementations %}
             <tr>
-                <td>{{ appliance.name }}</td>
+                <td>{{ appliance_implementation.name }}</td>
+                <td>{{ appliance_implementation.appliance.name }}</td>
+                <td>{{ appliance_implementation.site.name }}</td>
+                <td>{{ appliance_implementation.image_name }}</td>
             </tr>
         {% endfor %}
         </tbody>
