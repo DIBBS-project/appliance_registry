@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Appliance Registry API
   description: Store appliances with the Appliance Registry API.
-  version: "0.1.8"
+  version: "0.1.10"
 # the domain of the service
 host: 127.0.0.1:8003
 # array of all schemes that your API supports
@@ -760,7 +760,7 @@ paths:
           schema:
             $ref: '#/definitions/ApplianceImplementationPost'
       tags:
-        - ApplianceImplementations
+        - Appliance Implementations
       responses:
         201:
           description: The newly created appliance implementation
@@ -782,7 +782,7 @@ paths:
           required: true
           type: string
       tags:
-        - ApplianceImplementations
+        - Appliance Implementations
       responses:
         200:
           description: The appliance implementation matching the given name
@@ -852,7 +852,7 @@ paths:
           schema:
             $ref: '#/definitions/ApplianceImplementationPatch'
       tags:
-        - ApplianceImplementations
+        - Appliance Implementations
       responses:
         200:
           description: The updated appliance implementation
@@ -880,7 +880,7 @@ paths:
         - basic: []
         - api_key: []
       tags:
-        - ApplianceImplementations
+        - Appliance Implementations
       responses:
         204:
           description: Appliance implementation correctly deleted
@@ -969,29 +969,34 @@ definitions:
       name:
         type: string
         description: Name of the appliance
+      description:
+        type: string
+        description: Description of the appliance
       implementations:
         type: array
         items:
-          type: integer
-          description: IDs of appliance implementations
+          type: string
+          description: Names of appliance implementations
   AppliancePost:
     type: object
     required:
       - name
-      - site
     properties:
       name:
         type: string
         description: Name of the appliance
-      site:
+      description:
         type: string
-        description: Name of the site to use
+        description: Description of the appliance
   AppliancePatch:
     type: object
     properties:
       name:
         type: string
         description: Name of the appliance
+      description:
+        type: string
+        description: Description of the appliance
 
   ApplianceImplementation:
     type: object
@@ -1007,7 +1012,7 @@ definitions:
         description: Name of the site to use
       appliance:
         type: string
-        description: ID (name) of the appliance
+        description: Name of the appliance
       scripts:
         type: array
         items:
@@ -1024,7 +1029,7 @@ definitions:
         description: Name of the appliance implementation
       appliance:
         type: string
-        description: ID (name) of the appliance
+        description: Name of the appliance
       site:
         type: string
         description: Name of the site to use
@@ -1036,7 +1041,7 @@ definitions:
         description: Name of the appliance implementation
       appliance:
         type: string
-        description: ID (name) of the appliance
+        description: Name of the appliance
       site:
         type: string
         description: Name of the site to use
