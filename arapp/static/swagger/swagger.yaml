@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Appliance Registry API
   description: Store appliances with the Appliance Registry API.
-  version: "0.1.11"
+  version: "0.1.12"
 # the domain of the service
 host: 127.0.0.1:8003
 # array of all schemes that your API supports
@@ -969,6 +969,9 @@ definitions:
       name:
         type: string
         description: Name of the appliance
+      logo_url:
+        type: string
+        description: URL to a logo image
       description:
         type: string
         description: Description of the appliance
@@ -985,6 +988,9 @@ definitions:
       name:
         type: string
         description: Name of the appliance
+      logo_url:
+        type: string
+        description: URL to a logo image
       description:
         type: string
         description: Description of the appliance
@@ -994,6 +1000,9 @@ definitions:
       name:
         type: string
         description: Name of the appliance
+      logo_url:
+        type: string
+        description: URL to a logo image
       description:
         type: string
         description: Description of the appliance
@@ -1004,6 +1013,9 @@ definitions:
       name:
         type: string
         description: Name of the appliance implementation
+      logo_url:
+        type: string
+        description: URL to a logo image
       image_name:
         type: string
         description: Name of the image that will be used by the appliance implementation
@@ -1029,6 +1041,9 @@ definitions:
       name:
         type: string
         description: Name of the appliance implementation
+      logo_url:
+        type: string
+        description: URL to a logo image
       image_name:
         type: string
         description: Name of the image that will be used by the appliance implementation
@@ -1044,6 +1059,9 @@ definitions:
       name:
         type: string
         description: Name of the appliance implementation
+      logo_url:
+        type: string
+        description: URL to a logo image
       image_name:
         type: string
         description: Name of the image that will be used by the appliance implementation

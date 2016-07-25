@@ -8,11 +8,13 @@ from rest_framework.authtoken.models import Token
 
 class Appliance(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
+    logo_url = models.CharField(max_length=512, blank=True, default='')
     description = models.TextField(blank=True, default='')
 
 
 class ApplianceImpl(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
+    logo_url = models.CharField(max_length=512, blank=True, default='')
     image_name = models.CharField(max_length=300)
     appliance = models.ForeignKey(Appliance, related_name='implementations', on_delete=models.CASCADE)
     site = models.ForeignKey("Site", related_name='appliances', on_delete=models.CASCADE)
