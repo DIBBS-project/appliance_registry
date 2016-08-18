@@ -24,7 +24,7 @@ class SiteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields = ('name', 'contact_url', 'appliances')
+        fields = ('name', 'type', 'contact_url', 'appliances')
 
 
 class ScriptSerializer(serializers.ModelSerializer):

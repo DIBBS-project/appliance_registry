@@ -22,6 +22,7 @@ class ApplianceImpl(models.Model):
 
 class Site(models.Model):
     name = models.CharField(max_length=100, primary_key=True)
+    type = models.CharField(max_length=100)  # Ex: openstack
     contact_url = models.CharField(max_length=2048)
 
 

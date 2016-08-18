@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Appliance Registry API
   description: Store appliances with the Appliance Registry API.
-  version: "0.1.12"
+  version: "0.1.13"
 # the domain of the service
 host: 127.0.0.1:8003
 # array of all schemes that your API supports
@@ -1104,6 +1104,9 @@ definitions:
       name:
         type: string
         description: Name of the site
+      type:
+        type: string
+        description: Type of the site (e.g. openstack)
       contact_url:
         type: string
         description: Contact URL of the site
@@ -1116,11 +1119,15 @@ definitions:
     type: object
     required:
       - name
+      - type
       - contact_url
     properties:
       name:
         type: string
         description: Name of the site
+      type:
+        type: string
+        description: Type of the site (e.g. openstack)
       contact_url:
         type: string
         description: Contact URL of the site
@@ -1130,6 +1137,9 @@ definitions:
       name:
         type: string
         description: Name of the site
+      type:
+        type: string
+        description: Type of the site (e.g. openstack)
       contact_url:
         type: string
         description: Contact URL of the site
