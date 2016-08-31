@@ -1195,7 +1195,7 @@ definitions:
       username:
         type: string
         description: Name given to the user.
-      process_definitions:
+      operation_definitions:
         type: array
         description: Array of IDs of all the process descriptions created by the user
         items:
