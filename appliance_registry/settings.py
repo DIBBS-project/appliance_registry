@@ -52,6 +52,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'common_dibbs.auth.auth.CentralAuthenticationMiddleware'
 ]
 
 ROOT_URLCONF = 'appliance_registry.urls'
