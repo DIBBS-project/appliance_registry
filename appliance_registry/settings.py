@@ -52,7 +52,8 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'common_dibbs.auth.auth.CentralAuthenticationMiddleware'
+    'common_dibbs.CentralAuthenticationMiddleware',
+    'common_dibbs.DibbsUserMiddleware',
 ]
 
 ROOT_URLCONF = 'appliance_registry.urls'
@@ -136,18 +137,35 @@ REST_FRAMEWORK = {
 # Logging configuration to display errors
 LOGGING = {
     'version': 1,
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s] %(levelname)s %(name)s.%(funcName)s(L%(lineno)s): %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'handlers': {
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
-        'django.request': {
-            'handlers':['console'],
-            'propagate': True,
-            'level':'DEBUG',
-        }
+        # 'django.request': {
+        #     'handlers': ['console'],
+        #     'propagate': True,
+        #     'level': 'DEBUG',
+        # },
+        'arapp': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'common_dibbs': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
     },
 }
 
