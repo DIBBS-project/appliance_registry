@@ -1,17 +1,16 @@
-from arapp.models import Appliance, ApplianceImpl, Script, Action, Site
-from arapp.serializers import ApplianceSerializer, ApplianceImplSerializer, ScriptSerializer, ActionSerializer, UserSerializer, SiteSerializer
+# coding: utf-8
+from __future__ import absolute_import, print_function, unicode_literals
 
-# from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth.models import User
 from django.http import Http404
-
 from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from django.contrib.auth.models import User
 
+from arapp.models import Appliance, ApplianceImpl, Script, Action, Site
+from arapp.serializers import ApplianceSerializer, ApplianceImplSerializer, ScriptSerializer, ActionSerializer, UserSerializer, SiteSerializer
 
 @api_view(['GET'])
 def api_root(request, format=None):
