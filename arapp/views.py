@@ -1,8 +1,9 @@
 # coding: utf-8
 from __future__ import absolute_import, print_function, unicode_literals
 
-from django.contrib.auth.models import User
-from django.http import Http404
+import json
+
+from django.http import Http404, HttpResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
@@ -10,7 +11,19 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from arapp.models import Appliance, ApplianceImpl, Script, Action, Site
-from arapp.serializers import ApplianceSerializer, ApplianceImplSerializer, ScriptSerializer, ActionSerializer, UserSerializer, SiteSerializer
+from arapp.serializers import ApplianceSerializer, ApplianceImplSerializer, ScriptSerializer, ActionSerializer, SiteSerializer
+
+
+def debug_view(request):
+    return HttpResponse(json.dumps({
+        'user': str(request.user),
+        'type(user)': str(type(request.user)),
+        'is_authenticated': bool(request.user.is_authenticated()),
+        'is_anonymous': bool(request.user.is_anonymous()),
+        'is_active': bool(request.user.is_active),
+        'dibbs_interservice': str(request.dibbs_interservice),
+    }))
+
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -22,14 +35,6 @@ def api_root(request, format=None):
     })
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `detail` actions.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
 class ApplianceViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
@@ -37,7 +42,7 @@ class ApplianceViewSet(viewsets.ModelViewSet):
     """
     queryset = Appliance.objects.all()
     serializer_class = ApplianceSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         data2 = {}
@@ -58,7 +63,7 @@ class ApplianceImplViewSet(viewsets.ModelViewSet):
     """
     queryset = ApplianceImpl.objects.all()
     serializer_class = ApplianceImplSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         data2 = {}
@@ -79,7 +84,7 @@ class SiteViewSet(viewsets.ModelViewSet):
     """
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         data2 = {}
@@ -100,7 +105,7 @@ class ScriptViewSet(viewsets.ModelViewSet):
     """
     queryset = Script.objects.all()
     serializer_class = ScriptSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class ScriptForApplianceAndAction(APIView):
@@ -123,11 +128,13 @@ class ScriptForApplianceAndAction(APIView):
             if script.action.name == action:
                 serializer = ScriptSerializer(script)
                 return Response(serializer.data)
+
         app_impl = self.get_appliance_impl(u'common')
         for script in app_impl.scripts.all():
             if script.action.name == action:
                 serializer = ScriptSerializer(script)
                 return Response(serializer.data)
+
         raise Http404
 
 
@@ -138,7 +145,7 @@ class ActionViewSet(viewsets.ModelViewSet):
     """
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         data2 = {}

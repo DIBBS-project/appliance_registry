@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from models import Appliance, ApplianceImpl, Script, Action, Site
-from django.contrib.auth.models import User
 
 
 class ApplianceSerializer(serializers.ModelSerializer):
@@ -39,9 +38,3 @@ class ActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Action
         fields = ('name', 'scripts')
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username')
