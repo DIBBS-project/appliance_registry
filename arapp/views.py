@@ -42,7 +42,7 @@ class ApplianceViewSet(viewsets.ModelViewSet):
     """
     queryset = Appliance.objects.all()
     serializer_class = ApplianceSerializer
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         data2 = {}
@@ -63,7 +63,7 @@ class ApplianceImplViewSet(viewsets.ModelViewSet):
     """
     queryset = ApplianceImpl.objects.all()
     serializer_class = ApplianceImplSerializer
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         data2 = {}
@@ -84,7 +84,7 @@ class SiteViewSet(viewsets.ModelViewSet):
     """
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         data2 = {}
@@ -105,7 +105,7 @@ class ScriptViewSet(viewsets.ModelViewSet):
     """
     queryset = Script.objects.all()
     serializer_class = ScriptSerializer
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class ScriptForApplianceAndAction(APIView):
@@ -145,7 +145,7 @@ class ActionViewSet(viewsets.ModelViewSet):
     """
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         data2 = {}
