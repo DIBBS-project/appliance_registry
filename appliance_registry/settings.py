@@ -24,6 +24,7 @@ SECRET_KEY = 'sh85doi4a@$f+$ui7i)+!0ztbqn!s&w7(m*+=@=352e(g4g)4^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG_PROPAGATE_EXCEPTIONS = True
 
 ALLOWED_HOSTS = []
 
@@ -48,9 +49,9 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'common_dibbs.django.CASUserBridgeMiddleware',
+    'common_dibbs.django.InterserviceMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.RemoteUserMiddleware',
-    'common_dibbs.django.InterserviceMiddleware',
     'common_dibbs.django.GlobalRequestMiddleware',
 ]
 
@@ -63,8 +64,7 @@ ROOT_URLCONF = 'appliance_registry.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -181,4 +181,5 @@ DIBBS = {
         # 'oma': "http://127.0.0.1:8011",
         # 'rma': "http://127.0.0.1:8012",
     },
+    'shared_secret': b'SECRET',
 }
