@@ -15,27 +15,35 @@ else
     UWSGI=`which uwsgi`
 fi
 
-# deletes the temp directory
 function cleanup {
-  # pkill -P $$
   $UWSGI --stop "$WORK_DIR/uwsgi.pid"
-  killall INT uwsgi
-  # kill $RUNSERVER_ID
+  killall uwsgi || true
   rm -rf "$WORK_DIR"
   echo "Deleted temp working directory $WORK_DIR"
 }
 
+function error() {
+  # from http://stackoverflow.com/a/185900/194586
+  local parent_lineno="$1"
+  local message="$2"
+  local code="${3:-1}"
+  if [[ -n "$message" ]] ; then
+    echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+  else
+    echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+  fi
+  exit "${code}"
+}
+
 # register the cleanup function to be called on the EXIT signal
 trap cleanup EXIT
+trap 'error ${LINENO}' ERR
 
 export DJANGO_SETTINGS_MODULE="appliance_registry.settings_test"
 export TEMP_DATABASE="$WORK_DIR/db.sqlite"
 
 $PYTHON manage.py migrate
-# $PYTHON manage.py runserver 8003 &
 $UWSGI --http :8003 --module appliance_registry.wsgi --pidfile "$WORK_DIR/uwsgi.pid" &
-# RUNSERVER_ID=$!
-# echo $RUNSERVER_ID
 
 # sleep 5
 python tests/wait_net_service.py -p 8003
