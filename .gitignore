@@ -1,5 +1,6 @@
 # PROJECT
 tmp
+*.tmp
 .idea
 db.sqlite3
 arapp/migrations
@@ -171,5 +172,3 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
-
-
