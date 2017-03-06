@@ -14,7 +14,7 @@ matrix:
 
 before_install:
   - pip install --upgrade pip
-  - pip install https://github.com/DIBBS-project/central_authentication_service/archive/master.zip
+  - pip install https://github.com/DIBBS-project/common-dibbs/archive/master.zip
   - pip install --requirement dev-requirements.txt
 
 script:
