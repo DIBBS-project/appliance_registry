@@ -107,11 +107,9 @@ def test():
     response = requests.get(ROOT + '/appliances/')
     assertStatus(response, 200)
     assert len(response.json()) == 1
-    #
-    # response = requests.get(ROOT + '/implementation/')
-    # assertStatus(response, 200)
-    # raise RuntimeError
-    return 1
+
+    response = requests.get(ROOT + '/implementations/')
+    assertStatus(response, 200)
 
 
 def main(argv=None):

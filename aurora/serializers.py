@@ -14,6 +14,12 @@ class ApplianceSerializer(serializers.HyperlinkedModelSerializer):
     )
 
 
+class ImplementationSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Implementation
+        fields = '__all__'
+
+
 class SiteSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Site

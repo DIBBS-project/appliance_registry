@@ -116,5 +116,28 @@ class TestApplianceAccess(TestCase):
         assert response.status_code == 201, (response.status_code, response.content)
 
 
-class TestImplementationBasic(TestCase):
-    pass
+class PreAuthMixin(object):
+    def setUp(self):
+        User = get_user_model()
+        self.rfclient = APIClient()
+
+        username = 'alice'
+        password = 'ALICE'
+        self.user = User.objects.create_superuser(
+            username,
+            '{}@example.com'.format(username),
+            password,
+        )
+
+        self.rfclient.force_authenticate(user=self.user)
+
+
+class TestImplementationAccess(PreAuthMixin, TestCase):
+    endpoint = '/appliances/'
+
+    def setUp(self):
+        super().setUp()
+
+    def test_basic(self):
+        response = self.rfclient.get(self.endpoint)
+        self.assertEqual(response.status_code, 200)
