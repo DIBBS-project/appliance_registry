@@ -79,6 +79,8 @@ def test():
     # create site
     response = requests.post(ROOT + '/sites/', headers=alice_valid, json=site)
     assertStatus(response, 201, 'create site -> 201 CREATED')
+    site = response.json()
+    assert 'url' in site, 'url used as relationship for other objects'
 
     # refuse if duplicate name
     response = requests.post(ROOT + '/sites/', headers=alice_valid, json=site)
@@ -93,6 +95,8 @@ def test():
         'description': 'Prints "Hello, World!" for users to behold.',
     })
     assertStatus(response, 201)
+    appliance = response.json()
+    assert 'url' in appliance, 'url used as relationship for other objects'
 
     response = requests.post(ROOT + '/appliances/', headers=alice_valid, json={
         'name': 'helloworld',
@@ -108,8 +112,35 @@ def test():
     assertStatus(response, 200)
     assert len(response.json()) == 1
 
+    # start with nothing
     response = requests.get(ROOT + '/implementations/')
     assertStatus(response, 200)
+    assert len(response.json()) == 0
+
+    response = requests.post(
+        ROOT + '/implementations/',
+        headers=alice_valid,
+        json={
+            'appliance': appliance['url'],
+            'site': site['url'],
+            'script': 'print("Hello, world!") # oh wait, suppoz to be HOT',
+        },
+    )
+    assertStatus(response, 201)
+    implementation = response.json()
+    assert 'url' in implementation
+
+    # now should be one implemenation
+    imps = requests.get(ROOT + '/implementations/').json()
+    assert len(imps) == 1
+
+    # get it
+    imp = requests.get(imps[0]['url']).json()
+    assert "Hello, world!" in imp['script']
+
+    # related objects
+    requests.get(imp['site']).json()
+    requests.get(imp['appliance']).json()
 
 
 def main(argv=None):

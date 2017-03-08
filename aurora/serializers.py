@@ -12,12 +12,30 @@ class ApplianceSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True,
         default=serializers.CurrentUserDefault(),
     )
+    # implementations = serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name='implementations-detail',
+    # )
 
 
 class ImplementationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Implementation
         fields = '__all__'
+
+    site = serializers.HyperlinkedRelatedField(
+        view_name='site-detail',
+        queryset=models.Site.objects.all(),
+    )
+    appliance = serializers.HyperlinkedRelatedField(
+        view_name='appliance-detail',
+        queryset=models.Appliance.objects.all(),
+    )
+    owner = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        default=serializers.CurrentUserDefault(),
+    )
 
 
 class SiteSerializer(serializers.HyperlinkedModelSerializer):

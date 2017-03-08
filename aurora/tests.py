@@ -2,9 +2,12 @@ import json
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory, APIClient
 
 from . import models
+from . import serializers
+
 
 class TestSiteObject(TestCase):
     def test_basic(self):
@@ -114,6 +117,7 @@ class TestApplianceAccess(TestCase):
             'description': 'a_type',
         })
         assert response.status_code == 201, (response.status_code, response.content)
+        assert 'url' in response.json()
 
 
 class PreAuthMixin(object):
@@ -133,11 +137,59 @@ class PreAuthMixin(object):
 
 
 class TestImplementationAccess(PreAuthMixin, TestCase):
-    endpoint = '/appliances/'
+    endpoint = '/implementations/'
 
     def setUp(self):
         super().setUp()
+        self.app = models.Appliance.objects.create(
+            name='asdf',
+            description='asdf',
+            owner=self.user,
+        )
+        self.site = models.Site.objects.create(
+            name='zxcv',
+            type='zxcv',
+            api_url='zxcv',
+        )
+        self.rf = APIRequestFactory()
 
     def test_basic(self):
         response = self.rfclient.get(self.endpoint)
         self.assertEqual(response.status_code, 200)
+
+    def test_create(self):
+        # need context to get hyperlink field: http://stackoverflow.com/a/34444082/194586
+        request = self.rf.post(self.endpoint)
+        context = {'request': Request(request)}
+        site_url = serializers.SiteSerializer(self.site, context=context).data['url']
+        app_url = serializers.ApplianceSerializer(self.app, context=context).data['url']
+
+        response = self.rfclient.post(self.endpoint, format='json', data={
+            'site': site_url,
+            'appliance': app_url,
+            'script': 'qwer',
+        })
+        # print(response.content)
+        self.assertEqual(response.status_code, 201)
+
+
+class TestImplementationReading(TestImplementationAccess):
+    def setUp(self):
+        super().setUp()
+        self.imp = models.Implementation.objects.create(
+            site=self.site, appliance=self.app, owner=self.user,
+            script='hey guys')
+
+    def test_list(self):
+        response = self.rfclient.get(self.endpoint)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+
+    def test_details(self):
+        url = self.endpoint + str(self.imp.id) + '/'
+        response = self.rfclient.get(url)
+        self.assertEqual(response.status_code, 200)
+        # print(len(response.content))
+        # print(response.content.decode(response.charset))
+        data = response.json()
+        self.assertIn('script', data)
