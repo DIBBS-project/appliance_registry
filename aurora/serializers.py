@@ -3,7 +3,7 @@ from rest_framework import serializers
 from . import models
 
 
-class ApplianceSerializer(serializers.HyperlinkedModelSerializer):
+class ApplianceSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Appliance
         fields = '__all__'
@@ -19,17 +19,15 @@ class ApplianceSerializer(serializers.HyperlinkedModelSerializer):
     # )
 
 
-class ImplementationSerializer(serializers.HyperlinkedModelSerializer):
+class ImplementationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Implementation
         fields = '__all__'
 
-    site = serializers.HyperlinkedRelatedField(
-        view_name='site-detail',
+    site = serializers.PrimaryKeyRelatedField(
         queryset=models.Site.objects.all(),
     )
-    appliance = serializers.HyperlinkedRelatedField(
-        view_name='appliance-detail',
+    appliance = serializers.PrimaryKeyRelatedField(
         queryset=models.Appliance.objects.all(),
     )
     owner = serializers.PrimaryKeyRelatedField(
@@ -38,7 +36,7 @@ class ImplementationSerializer(serializers.HyperlinkedModelSerializer):
     )
 
 
-class SiteSerializer(serializers.HyperlinkedModelSerializer):
+class SiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Site
         fields = '__all__'

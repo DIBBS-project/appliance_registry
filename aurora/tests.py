@@ -117,7 +117,7 @@ class TestApplianceAccess(TestCase):
             'description': 'a_type',
         })
         assert response.status_code == 201, (response.status_code, response.content)
-        assert 'url' in response.json()
+        assert 'id' in response.json(), response.json()
 
 
 class PreAuthMixin(object):
@@ -159,14 +159,14 @@ class TestImplementationAccess(PreAuthMixin, TestCase):
 
     def test_create(self):
         # need context to get hyperlink field: http://stackoverflow.com/a/34444082/194586
-        request = self.rf.post(self.endpoint)
-        context = {'request': Request(request)}
-        site_url = serializers.SiteSerializer(self.site, context=context).data['url']
-        app_url = serializers.ApplianceSerializer(self.app, context=context).data['url']
+        # request = self.rf.post(self.endpoint)
+        # context = {'request': Request(request)}
+        # site_url = serializers.SiteSerializer(self.site, context=context).data['url']
+        # app_url = serializers.ApplianceSerializer(self.app, context=context).data['url']
 
         response = self.rfclient.post(self.endpoint, format='json', data={
-            'site': site_url,
-            'appliance': app_url,
+            'site': self.site.id,
+            'appliance': self.app.id,
             'script': 'qwer',
         })
         # print(response.content)

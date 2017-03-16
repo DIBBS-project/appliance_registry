@@ -32,6 +32,7 @@ function error() {
   else
     echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
   fi
+  echo -e "\n ${RED}\xE2\x9C\x97 FAIL${NC}"
   exit "${code}"
 }
 
@@ -51,3 +52,5 @@ python tests/wait_net_service.py -p 8003
 echo -e "\n == Django running ==\n"
 
 $PYTHON tests/functional_tests.py
+
+echo -e "\n ${GREEN}\xE2\x9C\x93 SUCCESS${NC}"
