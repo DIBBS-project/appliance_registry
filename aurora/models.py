@@ -19,6 +19,7 @@ class Implementation(models.Model):
     site = models.ForeignKey('Site', related_name='appliances', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     script = models.TextField()
+    script_parsed = models.TextField(editable=False)
 
 
 class Site(models.Model):
