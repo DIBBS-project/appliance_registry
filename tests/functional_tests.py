@@ -123,7 +123,7 @@ def test():
         json={
             'appliance': appliance['id'],
             'site': site['id'],
-            'script': 'print("Hello, world!") # oh wait, suppoz to be HOT',
+            'script': 'heat_template_version: 2014-05-02\noutputs:\n master_ip: 42',
         },
     )
     assertStatus(response, 201)
@@ -136,7 +136,8 @@ def test():
 
     # get it
     imp = requests.get(ROOT + '/implementations/{}/'.format(imps[0]['id'])).json()
-    assert "Hello, world!" in imp['script']
+    assert "outputs" in imp['script']
+    assert "\"outputs\"" in imp['script_parsed']
 
     # related objects
     requests.get(ROOT + '/sites/{}/'.format(imp['site'])).json()
