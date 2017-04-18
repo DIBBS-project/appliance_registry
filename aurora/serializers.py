@@ -6,24 +6,32 @@ import yaml
 from . import models
 
 
-def parse_template(yaml_script):
+def template_deserialize_yaml(yaml_template):
     """
-    Convert YAML script into JSON. Fails if there's an error.
+    Deserialize YAML template. Fails if there's an error.
     """
     try:
-        template = yaml.safe_load(yaml_script)
+        template = yaml.safe_load(yaml_template)
     except yaml.scanner.ScannerError as e:
-        raise ValueError(e)
+        raise serializers.ValidationError('could not parse script as YAML')
 
     # the heat client doesn't like dates, which PyYAML helpfully deserialized for us...
     HTV = 'heat_template_version'
     if HTV in template:
         template[HTV] = template[HTV].strftime('%Y-%m-%d')
 
+    return template
+
+
+def template_serialize_json(template):
+    """
+    Reserialize template into JSON. Fails if there's an error, probably from
+    unseriazable field like a date that snuck through.
+    """
     try:
         parsed = json.dumps(template)
     except TypeError as e:
-        raise ValueError(e)
+        raise serializers.ValidationError('could not serialize script to JSON')
 
     return parsed
 
@@ -61,10 +69,14 @@ class ImplementationSerializer(serializers.ModelSerializer):
     )
 
     def validate_script(self, value):
+        template = template_deserialize_yaml(value)
+
         try:
-            self._script_parsed = parse_template(value)
-        except ValueError:
-            raise serializers.ValidationError('could not parse script as YAML')
+            template['outputs']['master_ip']
+        except KeyError:
+            raise serializers.ValidationError('no "master_ip" output in template')
+
+        self._script_parsed = template_serialize_json(template)
         return value
 
     def validate(self, data):

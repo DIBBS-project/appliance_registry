@@ -1,13 +1,51 @@
 import json
+import textwrap
 
 from django.test import TestCase
 # from rest_framework.request import Request
+from rest_framework.serializers import ValidationError
 from rest_framework.test import APIRequestFactory, APIClient
 
 from aurora import models
 from aurora import serializers
 
 from .helpers import PreAuthMixin
+
+
+MINIMAL_VALID_TEMPLATE_YAML = """\
+key: value
+key2: value2
+outputs:
+    master_ip: whatever
+"""
+
+
+class TestImplementationDeserialize(TestCase):
+    def test_works(self):
+        out = serializers.template_deserialize_yaml(MINIMAL_VALID_TEMPLATE_YAML)
+        self.assertIn('key', out)
+
+    def test_raises_expected(self):
+        try:
+            serializers.template_deserialize_yaml('garbage yaml\nsomething: else')
+        except ValidationError as e:
+            pass
+        else:
+            self.fail('allowed malformed data')
+
+
+class TestImplementationReserialize(TestCase):
+    def test_works(self):
+        out = serializers.template_serialize_json({'hello': 'there'})
+        self.assertIn('hello', out)
+
+    def test_raises_expected(self):
+        try:
+            serializers.template_serialize_json(...) # ellipsis!
+        except ValidationError as e:
+            pass
+        else:
+            self.fail('allowed malformed data')
 
 
 class TestImplementationBase(PreAuthMixin, TestCase):
@@ -44,7 +82,7 @@ class TestImplementationAccess(TestImplementationBase):
         response = self.rfclient.post(self.endpoint, format='json', data={
             'site': self.site.id,
             'appliance': self.app.id,
-            'script': 'test: hello',
+            'script': MINIMAL_VALID_TEMPLATE_YAML,
         })
         # print(response.content)
         self.assertEqual(response.status_code, 201, response.json())
@@ -76,23 +114,20 @@ class TestImplementationReading(TestImplementationBase):
 
 
 class TestImplementationCreate(TestImplementationBase):
-    # def setUp(self):
-    #     super().setUp()
-    #     self.imp = models.Implementation.objects.create(
-    #         site=self.site, appliance=self.app, owner=self.user,
-    #         script='hey guys')
 
-    def test_create(self):
-        script = """\
-key: value
-key2: value2
-        """
+    def post_script(self, script, dedent=True):
+        if dedent:
+            script = textwrap.dedent(script)
 
-        response = self.rfclient.post(self.endpoint, format='json', data={
+        return self.rfclient.post(self.endpoint, format='json', data={
             'site': self.site.id,
             'appliance': self.app.id,
             'script': script,
         })
+
+    def test_create(self):
+        response = self.post_script(MINIMAL_VALID_TEMPLATE_YAML)
+
         self.assertEqual(response.status_code, 201, response.json())
         data = response.json()
         try:
@@ -104,21 +139,32 @@ key2: value2
         self.assertEqual(parsed['key'], 'value')
         self.assertEqual(parsed['key2'], 'value2')
 
-    def test_handle_htv(self):
-        htv_date = '2012-04-15'
-        script = f"""\
-heat_template_version: {htv_date}
-something:
-- 1
-- 2
-- 3
+    def test_ignore_set_parsed(self):
         """
-
+        Don't allow bypassing of the script parser; the framework shouldn't
+        allow direct setting of the parsed value.
+        """
         response = self.rfclient.post(self.endpoint, format='json', data={
             'site': self.site.id,
             'appliance': self.app.id,
-            'script': script,
+            'script': MINIMAL_VALID_TEMPLATE_YAML,
+            'script_parsed': 'zxcvbn',
         })
+        self.assertEqual(response.status_code, 201, response.json())
+        data = response.json()
+        self.assertNotIn('zxcvbn', data['script_parsed'])
+
+    def test_handle_htv(self):
+        htv_date = '2012-04-15'
+        response = self.post_script(f"""\
+            heat_template_version: {htv_date}
+            outputs: {{'master_ip': 0}}
+            something:
+            - 1
+            - 2
+            - 3
+        """)
+
         self.assertEqual(response.status_code, 201, response.json())
         data = response.json()
         try:
@@ -128,32 +174,33 @@ something:
 
         self.assertEqual(parsed['heat_template_version'], htv_date)
 
-    def test_handle_datelikes(self):
+    def test_kinda_handle_datelikes(self):
         htv_date = '2012-04-15'
-        script = f"""\
-not_the_heat_template_version: {htv_date}
-something: [2, 3, 4]
-        """
-
-        response = self.rfclient.post(self.endpoint, format='json', data={
-            'site': self.site.id,
-            'appliance': self.app.id,
-            'script': script,
-        })
+        response = self.post_script(f"""\
+            not_the_heat_template_version: {htv_date}
+            outputs: {{'master_ip': 0}}
+            something: [2, 3, 4]
+        """)
         self.assertTrue(response.status_code < 500, response.content)
         # not defined what happens, just don't implode the server.
 
     def test_bad_yaml(self):
-        script = """\
-key value
-key2: value2
-        """
-
-        response = self.rfclient.post(self.endpoint, format='json', data={
-            'site': self.site.id,
-            'appliance': self.app.id,
-            'script': script,
-        })
-        self.assertTrue(400 <= response.status_code < 500, response.json())
+        htv_date = '2012-04-15'
+        response = self.post_script("""\
+            key value
+            key2: value2
+        """)
+        self.assertEqual(400, response.status_code, response.json())
         self.assertIn('script', response.json()) # which field
         self.assertTrue(any('parse' in err for err in response.json()['script'])) # why
+
+    def test_require_masterip(self):
+        response = self.post_script("""\
+            key: value
+            outputs:
+                not_the_master_ip: whatever
+        """)
+
+        self.assertEqual(response.status_code, 400, response.json())
+        self.assertIn('script', response.json()) # which field
+        self.assertTrue(any('master_ip' in err for err in response.json()['script'])) # why
