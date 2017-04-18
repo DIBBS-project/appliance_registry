@@ -2,3 +2,4 @@ common-dibbs
 django>=1.11b1,<2.0
 djangorestframework>=3.5,<3.6
 pyjwt==1.4.2
+PyYAML==3.12
