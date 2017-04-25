@@ -68,21 +68,20 @@ class ImplementationSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault(),
     )
 
-    def validate_script(self, value):
+    def validate_template(self, value):
         template = template_deserialize_yaml(value)
-
         try:
             template['outputs']['master_ip']
         except KeyError:
             raise serializers.ValidationError('no "master_ip" output in template')
 
-        self._script_parsed = template_serialize_json(template)
+        self._template_parsed = template_serialize_json(template)
         return value
 
     def validate(self, data):
         # named field validators run first, and the script one did the
         # checking, but we need to plug it in here.
-        data['script_parsed'] = self._script_parsed
+        data['template_parsed'] = self._template_parsed
         return data
 
 

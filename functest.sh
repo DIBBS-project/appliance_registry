@@ -6,6 +6,9 @@ set -e
 # DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # the temp directory used, within $DIR
 WORK_DIR=`mktemp -d`
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
 
 if hash pyenv 2>/dev/null; then
     PYTHON=`pyenv which python`

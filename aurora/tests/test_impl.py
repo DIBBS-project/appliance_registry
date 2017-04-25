@@ -65,6 +65,11 @@ class TestImplementationBase(PreAuthMixin, TestCase):
         )
         self.rf = APIRequestFactory()
 
+    def post_endpoint(self, data=None, **kwdata):
+        if data is None:
+            data = kwdata
+        return self.rfclient.post(self.endpoint, format='json', data=data)
+
 
 class TestImplementationAccess(TestImplementationBase):
 
@@ -82,7 +87,7 @@ class TestImplementationAccess(TestImplementationBase):
         response = self.rfclient.post(self.endpoint, format='json', data={
             'site': self.site.id,
             'appliance': self.app.id,
-            'script': MINIMAL_VALID_TEMPLATE_YAML,
+            'template': MINIMAL_VALID_TEMPLATE_YAML,
         })
         # print(response.content)
         self.assertEqual(response.status_code, 201, response.json())
@@ -93,7 +98,7 @@ class TestImplementationReading(TestImplementationBase):
         super().setUp()
         self.imp = models.Implementation.objects.create(
             site=self.site, appliance=self.app, owner=self.user,
-            script='hey guys')
+            template='hey guys')
 
     def test_list(self):
         response = self.rfclient.get(self.endpoint)
@@ -107,10 +112,10 @@ class TestImplementationReading(TestImplementationBase):
         # print(len(response.content))
         # print(response.content.decode(response.charset))
         data = response.json()
-        self.assertIn('script', data)
+        self.assertIn('template', data)
         # parsed data probably not valid because we
         # directly inserted it, bypassing the validator
-        self.assertIn('script_parsed', data)
+        self.assertIn('template_parsed', data)
 
 
 class TestImplementationCreate(TestImplementationBase):
@@ -122,7 +127,7 @@ class TestImplementationCreate(TestImplementationBase):
         return self.rfclient.post(self.endpoint, format='json', data={
             'site': self.site.id,
             'appliance': self.app.id,
-            'script': script,
+            'template': script,
         })
 
     def test_create(self):
@@ -131,7 +136,7 @@ class TestImplementationCreate(TestImplementationBase):
         self.assertEqual(response.status_code, 201, response.json())
         data = response.json()
         try:
-            parsed = json.loads(data['script_parsed'])
+            parsed = json.loads(data['template_parsed'])
         except ValueError as e:
             self.fail(f'failed to parse JSON: {e}')
 
@@ -147,12 +152,12 @@ class TestImplementationCreate(TestImplementationBase):
         response = self.rfclient.post(self.endpoint, format='json', data={
             'site': self.site.id,
             'appliance': self.app.id,
-            'script': MINIMAL_VALID_TEMPLATE_YAML,
-            'script_parsed': 'zxcvbn',
+            'template': MINIMAL_VALID_TEMPLATE_YAML,
+            'template_parsed': 'zxcvbn',
         })
         self.assertEqual(response.status_code, 201, response.json())
         data = response.json()
-        self.assertNotIn('zxcvbn', data['script_parsed'])
+        self.assertNotIn('zxcvbn', data['template_parsed'])
 
     def test_handle_htv(self):
         htv_date = '2012-04-15'
@@ -168,7 +173,7 @@ class TestImplementationCreate(TestImplementationBase):
         self.assertEqual(response.status_code, 201, response.json())
         data = response.json()
         try:
-            parsed = json.loads(data['script_parsed'])
+            parsed = json.loads(data['template_parsed'])
         except ValueError as e:
             self.fail(f'failed to parse JSON: {e}')
 
@@ -191,8 +196,8 @@ class TestImplementationCreate(TestImplementationBase):
             key2: value2
         """)
         self.assertEqual(400, response.status_code, response.json())
-        self.assertIn('script', response.json()) # which field
-        self.assertTrue(any('parse' in err for err in response.json()['script'])) # why
+        self.assertIn('template', response.json()) # which field
+        self.assertTrue(any('parse' in err for err in response.json()['template'])) # why
 
     def test_require_masterip(self):
         response = self.post_script("""\
@@ -202,5 +207,5 @@ class TestImplementationCreate(TestImplementationBase):
         """)
 
         self.assertEqual(response.status_code, 400, response.json())
-        self.assertIn('script', response.json()) # which field
-        self.assertTrue(any('master_ip' in err for err in response.json()['script'])) # why
+        self.assertIn('template', response.json()) # which field
+        self.assertTrue(any('master_ip' in err for err in response.json()['template'])) # why
