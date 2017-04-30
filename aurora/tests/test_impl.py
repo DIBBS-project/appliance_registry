@@ -209,3 +209,31 @@ class TestImplementationCreate(TestImplementationBase):
         self.assertEqual(response.status_code, 400, response.json())
         self.assertIn('template', response.json()) # which field
         self.assertTrue(any('master_ip' in err for err in response.json()['template'])) # why
+
+
+class TestImplementationSimpleApp(TestImplementationBase):
+    def test_basic_fields(self):
+        image_name = 'my-image'
+        imp = models.Implementation(
+            site=self.site,
+            appliance=self.app,
+            owner=self.user,
+            image=image_name,
+        )
+        imp.save()
+
+    def test_basic_load(self):
+        image_name = 'my-image2'
+        response = self.post_endpoint({
+            'site': self.site.id,
+            'appliance': self.app.id,
+            'image': image_name,
+        })
+        self.assertEqual(response.status_code, 201, response.json())
+        data = response.json()
+
+        self.assertIn('template_parsed', data)
+        template = json.loads(data['template_parsed'])
+
+        self.assertIn('heat_template_version', template)
+        self.assertEqual(template['resources']['appliance_instance']['properties']['image'], image_name)

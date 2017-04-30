@@ -18,8 +18,9 @@ class Implementation(models.Model):
     appliance = models.ForeignKey('Appliance', related_name='implementations', on_delete=models.CASCADE)
     site = models.ForeignKey('Site', related_name='appliances', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
+    image = models.CharField(max_length=1000, blank=True)
     template = models.TextField(blank=True)
-    template_parsed = models.TextField(editable=False)
+    template_parsed = models.TextField(editable=False) # always JSON
 
 
 class Site(models.Model):

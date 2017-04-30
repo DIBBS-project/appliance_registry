@@ -1,0 +1,54 @@
+description: Generic template template to launch images as appliances
+heat_template_version: 2015-04-30
+
+resources:
+  appliance_floating_ip:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext-net
+
+  appliance_instance:
+    type: OS::Nova::Server
+    depends_on: [ appliance_floating_ip ]
+    properties:
+      name: instance-app-{{ image }}
+      flavor: { get_param: flavor_name }
+      image: {{ image }}
+      key_name: { get_param: key_name }
+      networks:
+         - network: { get_param: network_name }
+      scheduler_hints: { reservation: { get_param: reservation_id } }
+
+  appliance_association:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: appliance_floating_ip }
+      server_id: { get_resource: appliance_instance }
+
+parameters:
+  allowed_ip:
+    type: string
+    description: IP network allowed to connect to DIBBs platform ports (8000, 8011, 8012).
+  key_name:
+    type: string
+    description: Name of a KeyPair to enable SSH access to instances
+    constraints:
+    - custom_constraint: nova.keypair
+    default: default
+  network_name:
+    type: string
+    description: Name of the network used for the instances.
+    constraints:
+    - custom_constraint: neutron.network
+    default: sharednet1
+  reservation_id:
+    type: string
+    description: ID of the Blazar reservation to use for launching instances, if needed.
+    # constraints:
+    # - custom_constraint: blazar.reservation
+    default: none
+
+outputs:
+  master_ip:
+    description: Public IP address of the head node to contact
+    value: { get_attr: [appliance_floating_ip, ip] }
